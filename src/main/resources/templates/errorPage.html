@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+            margin: 0;
+        }
+        h1 {
+            font-size: 4em;
+            color: #32CD32; /* красивый зелёный цвет */
+            margin-bottom: 20px;
+        }
+        .images-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .images-container img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>УПС, ПРОИЗОШЛА ОШИБКА</h1>
+<div class="images-container">
+    <!-- "Хаотичный" порядок изображений -->
+    <img src="https://i.pinimg.com/736x/f4/95/12/f49512ebd1eeeb42158b40becd5d7ea9.jpg" alt="Изображение 2">
+</div>
+<button onclick="history.back()">Назад</button>
+</body>
+</html>

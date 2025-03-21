@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: spring.security
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springsecurity
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+jwt:
+  secret: MySuperPuperSecretKeyForJwtToken01234567890123456789
+  expirationMs: 3600000
+
+
