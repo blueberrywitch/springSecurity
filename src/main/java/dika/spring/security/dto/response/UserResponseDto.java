@@ -1,6 +1,7 @@
 package dika.spring.security.dto.response;
 
-import dika.spring.security.dto.LinksEntityDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.enums.Roles;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,8 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UserResponseDTO {
+public class UserResponseDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID externalId;
 
     private String username;
@@ -25,5 +27,5 @@ public class UserResponseDTO {
 
     private List<Roles> role;
 
-    private LinksEntityDTO linksEntityDTO;
+    private LinksEntityDto linksEntityDTO;
 }

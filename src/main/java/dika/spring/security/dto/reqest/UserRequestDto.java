@@ -1,7 +1,8 @@
 package dika.spring.security.dto.reqest;
 
-import dika.spring.security.dto.LinksEntityDTO;
+import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.enums.Roles;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,14 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UserRequestDTO {
+public class UserRequestDto {
 
+    @NotNull(message = "Username не может быть null")
+    @Size(min = 3)
     private String username;
 
+    @NotNull(message = "Password не может быть null")
     @Size(min = 3)
     private String password;
 
     private List<Roles> role;
 
-    private LinksEntityDTO linksEntityDTO;
+    private LinksEntityDto linksEntityDTO;
 }
