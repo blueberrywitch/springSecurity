@@ -1,20 +1,20 @@
-package dika.spring.security.service;
+package dika.spring.security.service.impl;
 
-import dika.spring.security.dto.reqest.UserRequestDTO;
-import dika.spring.security.dto.response.UserResponseDTO;
+import dika.spring.security.dto.reqest.UserRequestDto;
+import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
 import dika.spring.security.exception.UserNotFoundException;
 import dika.spring.security.mapper.UserMapper;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import dika.spring.security.repository.UserRepository;
+import dika.spring.security.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -22,12 +22,11 @@ import java.util.function.Consumer;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
-    public UserResponseDTO add(UserRequestDTO user) {
+    public UserResponseDto add(UserRequestDto user) {
         return userMapper.toDTO(userRepository.save(userMapper.fromDTO(user)));
     }
 
@@ -43,17 +42,24 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
-    public void update(UUID externalId, UserResponseDTO user) {
-        Optional<User> userOptional = userRepository.findByExternalId(externalId);
-        if (userOptional.isPresent()) {
-            User userUpdate = userOptional.get();
-            updateFields(user.getUsername(), userUpdate::setUsername);
-            updateFields(user.getPassword(), userUpdate::setPassword);
-            LinksEntity newLink = userUpdate.getLinksEntity();
-            userUpdate.setLinksEntity(updateLinks(userMapper.fromDTO(user.getLinksEntityDTO()), newLink));
-            userMapper.toDTO(userRepository.save(userUpdate));
-        }
+    public void update(UUID externalId, UserResponseDto user) {
+        User userUpdate = userRepository.findByExternalId(externalId).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
+        updateFields(user.getUsername(), userUpdate::setUsername);
+        updateFields(user.getPassword(), userUpdate::setPassword);
+        LinksEntity newLink = userUpdate.getLinksEntity();
+        userUpdate.setLinksEntity(updateLinks(userMapper.fromDTO(user.getLinksEntityDTO()), newLink));
+        userMapper.toDTO(userRepository.save(userUpdate));
+    }
+
+    @Transactional
+    @Override
+    public void updateRole(UUID externalId, List<Roles> roles) {
+        User user = userRepository.findByExternalId(externalId).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
+        user.setRole(roles);
     }
 
     @Override
@@ -80,6 +86,10 @@ public class UserServiceImpl implements UserService {
                 () -> new UserNotFoundException("User not found"));
     }
 
+    @Override
+    public boolean isAdmin(Authentication auth) {
+        return auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"));
+    }
 
     private void updateFields(String newParam, Consumer<String> oldParam) {
         if (newParam != null) {
@@ -95,17 +105,6 @@ public class UserServiceImpl implements UserService {
         updateFields(newParam.getInstRef(), oldParam::setInstRef);
         updateFields(newParam.getVkRef(), oldParam::setVkRef);
         return oldParam;
-    }
-
-    @Override
-    public void addRoles(User user, List<Roles> roles) {
-        user.setRole(roles);
-        UserRequestDTO userResponseDTO = new UserRequestDTO(user.getUsername(), user.getPassword(), user.getRole(),
-                userMapper.toDTO(user.getLinksEntity()));
-
-        userRepository.deleteById(user.getId());
-        add(userResponseDTO);
-        log.info("User roles {}", user.getRole());
     }
 
 }

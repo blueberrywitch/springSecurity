@@ -1,4 +1,4 @@
-package dika.spring.security.service;
+package dika.spring.security.service.impl;
 
 import dika.spring.security.enums.Roles;
 import dika.spring.security.model.User;

@@ -48,7 +48,7 @@ public class JwtTokenProvider {
         return Long.valueOf(claims.getSubject());
     }
 
-    public List<Roles> validateAndGetRoles(String token){
+    public List<Roles> validateAndGetRoles(String token) {
         Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)

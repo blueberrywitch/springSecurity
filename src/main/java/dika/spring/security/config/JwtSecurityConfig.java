@@ -24,12 +24,12 @@ public class JwtSecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/user").permitAll() // публичные эндпоинты
-                        .anyRequest().authenticated() // все остальные требуют аутентификации
+                        .requestMatchers("/login/**", "/user").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")                  // URL, по которому инициируется выход из системы
-                        .logoutSuccessUrl("/login?logout=true")// URL для перенаправления после успешного выхода
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true))
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

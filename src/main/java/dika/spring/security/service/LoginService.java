@@ -1,15 +1,15 @@
 package dika.spring.security.service;
 
-import dika.spring.security.dto.LoginDTO;
-import dika.spring.security.dto.reqest.UserRequestDTO;
+import dika.spring.security.dto.reqest.LoginDto;
+import dika.spring.security.dto.reqest.UserRequestDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface LoginService {
-    String login(LoginDTO loginDTO);
+    String login(LoginDto loginDTO);
 
-    String registration(UserRequestDTO user);
+    String registration(UserRequestDto user);
 
     Cookie createCookie(String token);
 

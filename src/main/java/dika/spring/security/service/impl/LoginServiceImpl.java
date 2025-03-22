@@ -1,14 +1,17 @@
-package dika.spring.security.service;
+package dika.spring.security.service.impl;
 
+import dika.spring.security.dto.reqest.LoginDto;
+import dika.spring.security.dto.reqest.UserRequestDto;
+import dika.spring.security.exception.IncorrectDataException;
 import dika.spring.security.jwt.JwtTokenProvider;
-import dika.spring.security.dto.LoginDTO;
-import dika.spring.security.dto.reqest.UserRequestDTO;
-import dika.spring.security.exception.IncorrectDataExeption;
 import dika.spring.security.mapper.UserMapper;
 import dika.spring.security.model.User;
+import dika.spring.security.service.LoginService;
+import dika.spring.security.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,22 +26,24 @@ public class LoginServiceImpl implements LoginService {
     private final UserMapper userMapper;
 
     @Override
-    public String login(LoginDTO loginDTO) {
+    public String login(LoginDto loginDTO) {
         log.info("Login request: {}", loginDTO);
-            User user = userService.findUserByUsername(loginDTO.getUsername());
-            if (!user.getPassword().equals(loginDTO.getPassword())) {
-                throw new IncorrectDataExeption("Incorrect password");
-            }
-            return jwtTokenProvider.generateToken(user.getId(), user.getRole());
+        User user = userService.findUserByUsername(loginDTO.getUsername());
+        if (!user.getPassword().equals(loginDTO.getPassword())) {
+            throw new IncorrectDataException("Incorrect password");
+        }
+        return jwtTokenProvider.generateToken(user.getId(), user.getRole());
     }
 
+    @Transactional
     @Override
-    public String registration(UserRequestDTO user) {
+    public String registration(UserRequestDto user) {
         userService.add(user);
-        LoginDTO loginDTO = new LoginDTO();
-        loginDTO.setUsername(user.getUsername());
-        loginDTO.setPassword(user.getPassword());
-        return login(loginDTO);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsername(user.getUsername());
+        loginDto.setPassword(user.getPassword());
+        return jwtTokenProvider.generateToken(userService.findUserByUsername
+                (user.getUsername()).getId(), user.getRole());
     }
 
     @Override

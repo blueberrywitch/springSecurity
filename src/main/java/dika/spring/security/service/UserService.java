@@ -1,21 +1,22 @@
 package dika.spring.security.service;
 
-import dika.spring.security.dto.reqest.UserRequestDTO;
-import dika.spring.security.dto.response.UserResponseDTO;
+import dika.spring.security.dto.reqest.UserRequestDto;
+import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
 import dika.spring.security.model.User;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
-    UserResponseDTO add(UserRequestDTO user);
+    UserResponseDto add(UserRequestDto user);
 
     User findById(Long id);
 
     void deleteById(Long id);
 
-    void update(UUID externalId, UserResponseDTO user);
+    void update(UUID externalId, UserResponseDto user);
 
     List<User> findAll();
 
@@ -25,5 +26,7 @@ public interface UserService {
 
     User findUserByUsername(String username);
 
-    void addRoles(User user, List<Roles> roles);
+    void updateRole(UUID externalId, List<Roles> roles);
+
+    boolean isAdmin(Authentication auth);
 }

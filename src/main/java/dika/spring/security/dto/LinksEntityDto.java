@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LinksEntityDTO {
+public class LinksEntityDto {
     private String tgRef;
 
     private String instRef;

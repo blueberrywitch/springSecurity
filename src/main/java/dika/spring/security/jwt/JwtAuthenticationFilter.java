@@ -1,6 +1,5 @@
 package dika.spring.security.jwt;
 
-import dika.spring.security.service.LoginService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -24,7 +23,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final LoginService jwtService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -36,29 +34,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("jwt")) {
-                        String token = cookie.getValue();
-                        Long userId = jwtTokenProvider.validateAndGetUserId(token);
-                        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                            UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
-
-                            UsernamePasswordAuthenticationToken authToken =
-                                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            SecurityContextHolder.getContext().setAuthentication(authToken);
-                        }
-                    }
+                    getTokenFromCookie(cookie, request);
                 }
             }
-
-
         } catch (Exception ex) {
-            // В случае ошибки очищаем контекст и логируем ошибку
             SecurityContextHolder.clearContext();
             log.error("Ошибка при валидации JWT-токена", ex);
         }
-        // Передаем управление следующему фильтру в цепочке
         filterChain.doFilter(request, response);
+    }
+
+    private void getTokenFromCookie(Cookie cookie, HttpServletRequest request) {
+        if (cookie.getName().equals("jwt")) {
+            Long userId = jwtTokenProvider.validateAndGetUserId(cookie.getValue());
+            if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId.toString());
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null,
+                                userDetails.getAuthorities());
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
     }
 }
