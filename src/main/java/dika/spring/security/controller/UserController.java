@@ -36,18 +36,16 @@ public class UserController {
     @PermitAll
     @GetMapping
     public ModelAndView getUser(ModelMap model, HttpServletRequest request) {
-        List<String> headers = List.of("id", "username", "link");
         model.addAttribute("isAdmin", userService.isAdmin());
         model.addAttribute("username", loginService.getUsernameFromCookie(request));
-        model.addAttribute("listheaders", headers);
         model.addAttribute("users", userService.findAll());
         return new ModelAndView("user", model);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(HttpServletRequest request, HttpServletResponse response) {
-        userService.deleteByExternalId(userService.findUserByUsername
-                (loginService.getUsernameFromCookie(request)).getExternalId());
+        userService.deleteByUsername(
+                (loginService.getUsernameFromCookie(request)));
         loginService.cleanCookie(response);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

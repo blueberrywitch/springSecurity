@@ -88,6 +88,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
+        userRepository.deleteById(user.getId());
+    }
+
+    @Override
     public boolean isAdmin() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch
                 (a -> a.getAuthority().equals("ADMIN"));

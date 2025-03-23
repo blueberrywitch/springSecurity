@@ -29,4 +29,6 @@ public interface UserService {
     void updateRole(UUID externalId, List<Roles> roles);
 
     boolean isAdmin();
+
+    void deleteByUsername(String username);
 }

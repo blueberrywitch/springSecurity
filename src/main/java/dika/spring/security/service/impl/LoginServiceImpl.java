@@ -25,35 +25,18 @@ public class LoginServiceImpl implements LoginService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
 
+    @Transactional
     @Override
-    public String login(LoginDto loginDTO) {
-        log.info("Login request: {}", loginDTO);
-        User user = userService.findUserByUsername(loginDTO.getUsername());
-        if (!user.getPassword().equals(loginDTO.getPassword())) {
-            throw new IncorrectDataException("Incorrect password");
-        }
-        return jwtTokenProvider.generateToken(user.getId(), user.getRole());
+    public Cookie getCookie(LoginDto loginDTO){
+        return  createCookie(login(loginDTO));
     }
 
     @Transactional
     @Override
-    public String registration(UserRequestDto user) {
-        userService.add(user);
-        LoginDto loginDto = new LoginDto();
-        loginDto.setUsername(user.getUsername());
-        loginDto.setPassword(user.getPassword());
-        return jwtTokenProvider.generateToken(userService.findUserByUsername
-                (user.getUsername()).getId(), user.getRole());
+    public Cookie getCookie(UserRequestDto user){
+        return  createCookie(registration(user));
     }
 
-    @Override
-    public Cookie createCookie(String token) {
-        Cookie jwtCookie = new Cookie("jwt", token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60 * 60);
-        return jwtCookie;
-    }
 
     @Override
     public String getUsernameFromCookie(HttpServletRequest request) {
@@ -77,5 +60,31 @@ public class LoginServiceImpl implements LoginService {
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(0);
         response.addCookie(jwtCookie);
+    }
+
+    private String login(LoginDto loginDTO) {
+        log.info("Login request: {}", loginDTO);
+        User user = userService.findUserByUsername(loginDTO.getUsername());
+        if (!user.getPassword().equals(loginDTO.getPassword())) {
+            throw new IncorrectDataException("Incorrect password");
+        }
+        return jwtTokenProvider.generateToken(user.getId(), user.getRole());
+    }
+
+    private String registration(UserRequestDto user) {
+        userService.add(user);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsername(user.getUsername());
+        loginDto.setPassword(user.getPassword());
+        return jwtTokenProvider.generateToken(userService.findUserByUsername
+                (user.getUsername()).getId(), user.getRole());
+    }
+
+    private Cookie createCookie(String token) {
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(60 * 60);
+        return jwtCookie;
     }
 }

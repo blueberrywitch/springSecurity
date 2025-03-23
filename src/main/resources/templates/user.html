@@ -38,7 +38,10 @@
     <table class="table table-bordered" id="usersTable">
         <thead>
         <tr>
-            <th th:each="header : ${listheaders}" th:text="${header}"></th>
+            <!-- Статические заголовки -->
+            <th>ID</th>
+            <th>Username</th>
+            <th>Link</th>
             <th>Действия</th>
         </tr>
         </thead>
@@ -58,7 +61,7 @@
                             onclick="deleteUser()">
                         Удалить
                     </button>
-                    <!-- Кнопка редактирования остается без изменений -->
+                    <!-- Кнопка редактирования -->
                     <button type="button" class="btn btn-primary btn-sm edit-user-btn"
                             th:attr="data-externalid=${user.externalId},
                                       data-id=${user.id},

@@ -26,7 +26,7 @@ public class LoginController {
 
     @PostMapping("/access")
     public String loginPost(@ModelAttribute LoginDto loginDTO, HttpServletResponse response) {
-        response.addCookie(loginService.createCookie(loginService.login(loginDTO)));
+        response.addCookie(loginService.getCookie(loginDTO));
         return "redirect:/user";
     }
 
@@ -35,7 +35,7 @@ public class LoginController {
                                @ModelAttribute LinksEntityDto linksEntityDTO,
                                HttpServletResponse response) {
         user.setLinksEntityDTO(linksEntityDTO);
-        response.addCookie(loginService.createCookie(loginService.registration(user)));
+        response.addCookie(loginService.getCookie(user));
         return "redirect:/user";
     }
 

@@ -7,13 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface LoginService {
-    String login(LoginDto loginDTO);
-
-    String registration(UserRequestDto user);
-
-    Cookie createCookie(String token);
 
     String getUsernameFromCookie(HttpServletRequest request);
 
     void cleanCookie(HttpServletResponse response);
+
+    Cookie getCookie(UserRequestDto user);
+
+    Cookie getCookie(LoginDto loginDTO);
 }
