@@ -37,8 +37,7 @@ public class UserController {
     @GetMapping
     public ModelAndView getUser(ModelMap model, HttpServletRequest request) {
         List<String> headers = List.of("id", "username", "link");
-        model.addAttribute("isAdmin", userService.isAdmin
-                (SecurityContextHolder.getContext().getAuthentication()));
+        model.addAttribute("isAdmin", userService.isAdmin());
         model.addAttribute("username", loginService.getUsernameFromCookie(request));
         model.addAttribute("listheaders", headers);
         model.addAttribute("users", userService.findAll());

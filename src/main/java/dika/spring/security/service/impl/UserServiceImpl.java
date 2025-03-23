@@ -12,6 +12,7 @@ import dika.spring.security.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -87,8 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isAdmin(Authentication auth) {
-        return auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"));
+    public boolean isAdmin() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch
+                (a -> a.getAuthority().equals("ADMIN"));
     }
 
     private void updateFields(String newParam, Consumer<String> oldParam) {

@@ -28,5 +28,5 @@ public interface UserService {
 
     void updateRole(UUID externalId, List<Roles> roles);
 
-    boolean isAdmin(Authentication auth);
+    boolean isAdmin();
 }
