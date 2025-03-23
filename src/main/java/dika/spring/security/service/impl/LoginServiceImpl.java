@@ -13,10 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -24,17 +22,18 @@ public class LoginServiceImpl implements LoginService {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
+    private final int cookieMaxAge = 3600;
 
     @Transactional
     @Override
-    public Cookie getCookie(LoginDto loginDTO){
-        return  createCookie(login(loginDTO));
+    public Cookie getCookie(LoginDto loginDTO) {
+        return createCookie(login(loginDTO));
     }
 
     @Transactional
     @Override
-    public Cookie getCookie(UserRequestDto user){
-        return  createCookie(registration(user));
+    public Cookie getCookie(UserRequestDto user) {
+        return createCookie(registration(user));
     }
 
 
@@ -63,7 +62,6 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private String login(LoginDto loginDTO) {
-        log.info("Login request: {}", loginDTO);
         User user = userService.findUserByUsername(loginDTO.getUsername());
         if (!user.getPassword().equals(loginDTO.getPassword())) {
             throw new IncorrectDataException("Incorrect password");
@@ -84,7 +82,7 @@ public class LoginServiceImpl implements LoginService {
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60 * 60);
+        jwtCookie.setMaxAge(cookieMaxAge);
         return jwtCookie;
     }
 }
