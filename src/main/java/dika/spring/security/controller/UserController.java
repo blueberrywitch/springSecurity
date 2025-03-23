@@ -1,16 +1,16 @@
 package dika.spring.security.controller;
 
-import dika.spring.security.dto.LinksEntityDTO;
-import dika.spring.security.dto.response.UserResponseDTO;
+import dika.spring.security.dto.LinksEntityDto;
+import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.service.LoginService;
 import dika.spring.security.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,29 +36,24 @@ public class UserController {
     @PermitAll
     @GetMapping
     public ModelAndView getUser(ModelMap model, HttpServletRequest request) {
-        List<String> headers = List.of("id", "username", "link");
-        String username = loginService.getUsernameFromCookie(request);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ADMIN"));
-        model.addAttribute("isAdmin", isAdmin);
-        model.addAttribute("username", username);
-        model.addAttribute("listheaders", headers);
+        model.addAttribute("isAdmin", userService.isAdmin());
+        model.addAttribute("username", loginService.getUsernameFromCookie(request));
         model.addAttribute("users", userService.findAll());
         return new ModelAndView("user", model);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteUser(HttpServletRequest request, HttpServletResponse response) {
-        String username = loginService.getUsernameFromCookie(request);
-        UUID externalId = userService.findUserByUsername(username).getExternalId();
-        userService.deleteByExternalId(externalId);
+        userService.deleteByUsername(
+                (loginService.getUsernameFromCookie(request)));
         loginService.cleanCookie(response);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/update/{externalId}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable UUID externalId, @ModelAttribute UserResponseDTO user,
-                                                      @ModelAttribute LinksEntityDTO linksEntityDTO) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable UUID externalId,
+                                                      @Valid @ModelAttribute UserResponseDto user,
+                                                      @ModelAttribute LinksEntityDto linksEntityDTO) {
         userService.update(externalId, user);
 
         return new ResponseEntity<>(user, HttpStatus.OK);

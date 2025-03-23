@@ -40,8 +40,8 @@ public class ExceptionHandler {
         return mav;
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(IncorrectDataExeption.class)
-    public ModelAndView handleIncorrectDataException(IncorrectDataExeption ex) {
+    @org.springframework.web.bind.annotation.ExceptionHandler(IncorrectDataException.class)
+    public ModelAndView handleIncorrectDataException(IncorrectDataException ex) {
         ModelAndView mav = new ModelAndView("errorPage");
         mav.setStatus(HttpStatus.BAD_REQUEST);
         mav.addObject("errorTitle", "Неверные данные");

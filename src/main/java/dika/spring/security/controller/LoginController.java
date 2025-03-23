@@ -1,10 +1,9 @@
 package dika.spring.security.controller;
 
-import dika.spring.security.dto.LinksEntityDTO;
-import dika.spring.security.dto.LoginDTO;
-import dika.spring.security.dto.reqest.UserRequestDTO;
+import dika.spring.security.dto.LinksEntityDto;
+import dika.spring.security.dto.reqest.LoginDto;
+import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.service.LoginService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,19 +25,17 @@ public class LoginController {
     }
 
     @PostMapping("/access")
-    public String loginPost(@ModelAttribute LoginDTO loginDTO, HttpServletResponse response) {
-        String token = loginService.login(loginDTO);
-        Cookie jwtCookie = loginService.createCookie(token);
-        response.addCookie(jwtCookie);
+    public String loginPost(@ModelAttribute LoginDto loginDTO, HttpServletResponse response) {
+        response.addCookie(loginService.getCookie(loginDTO));
         return "redirect:/user";
     }
 
     @PostMapping("/registration")
-    public String registration(@ModelAttribute UserRequestDTO user,
-                               @ModelAttribute LinksEntityDTO linksEntityDTO,
+    public String registration(@ModelAttribute UserRequestDto user,
+                               @ModelAttribute LinksEntityDto linksEntityDTO,
                                HttpServletResponse response) {
         user.setLinksEntityDTO(linksEntityDTO);
-        response.addCookie(loginService.createCookie(loginService.registration(user)));
+        response.addCookie(loginService.getCookie(user));
         return "redirect:/user";
     }
 

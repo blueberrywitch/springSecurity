@@ -34,17 +34,17 @@
     </div>
     <!-- Блок уведомлений -->
     <div id="notification" class="alert" style="display:none;" role="alert"></div>
-    <!-- Таблица пользователей -->
+    <!-- Таблица пользователей без отображения ID -->
     <table class="table table-bordered" id="usersTable">
         <thead>
         <tr>
-            <th th:each="header : ${listheaders}" th:text="${header}"></th>
+            <th>Имя пользователя</th>
+            <th>Ссылки</th>
             <th>Действия</th>
         </tr>
         </thead>
         <tbody id="userTableBody">
         <tr th:each="user : ${users}">
-            <td th:text="${user.id}"></td>
             <td th:text="${user.username}"></td>
             <td>
                 <div>Telegram: <span th:text="${user.linksEntity != null ? user.linksEntity.tgRef : '-'}"></span></div>
@@ -53,12 +53,12 @@
             </td>
             <td>
                 <div th:if="${username != null and (username == user.username or isAdmin)}">
-                    <!-- Удаление: кнопка без передачи externalId -->
+                    <!-- Удаление: кнопка (используются данные для идентификации, но они не отображаются в таблице) -->
                     <button type="button" class="btn btn-danger btn-sm"
                             onclick="deleteUser()">
                         Удалить
                     </button>
-                    <!-- Кнопка редактирования остается без изменений -->
+                    <!-- Кнопка редактирования: данные id и externalId передаются через data-атрибуты, но не показываются -->
                     <button type="button" class="btn btn-primary btn-sm edit-user-btn"
                             th:attr="data-externalid=${user.externalId},
                                       data-id=${user.id},
@@ -104,7 +104,7 @@
                     </div>
                     <hr>
                     <h6>Ссылки</h6>
-                    <!-- Здесь имена полей изменены так, чтобы Spring создавал вложенный объект linksEntityDTO -->
+                    <!-- Имена полей с префиксом для формирования вложенного объекта -->
                     <div class="form-group">
                         <label for="editTgRef">Telegram</label>
                         <input type="text" class="form-control" name="linksEntityDTO.tgRef" id="editTgRef">
@@ -221,6 +221,5 @@
         window.deleteUser = deleteUser;
     });
 </script>
-
 </body>
 </html>
