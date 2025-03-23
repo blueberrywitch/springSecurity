@@ -18,9 +18,11 @@ public interface UserMapper {
 
     @Mapping(source = "linksEntityDTO", target = "linksEntity")
     @Mapping(target = "externalId", expression = "java(UUID.randomUUID())")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", expression = "java(dto.getRole() == null ? Collections.singletonList(Roles.USER) : dto.getRole())")
     User fromDTO(UserRequestDto dto);
 
+    @Mapping(target = "id", ignore = true)
     LinksEntity fromDTO(LinksEntityDto linksEntity);
 
     LinksEntityDto toDTO(LinksEntity linksEntity);
