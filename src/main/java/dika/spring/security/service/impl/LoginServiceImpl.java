@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
-    private final int cookieMaxAge = 3600;
+    private static final int COOKIEMAXAGE = 3600;
 
     @Transactional
     @Override
@@ -82,7 +82,7 @@ public class LoginServiceImpl implements LoginService {
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(cookieMaxAge);
+        jwtCookie.setMaxAge(COOKIEMAXAGE);
         return jwtCookie;
     }
 }
