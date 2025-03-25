@@ -1,6 +1,7 @@
 package dika.spring.security.service;
 
-import mapper.UserMapper;
+import dika.spring.security.mapper.LinksMapper;
+import dika.spring.security.mapper.UserMapper;
 import dika.spring.security.jwt.JwtTokenProvider;
 import dika.spring.security.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,5 +30,8 @@ public abstract class Mocks {
 
     @Mock
     public HttpServletRequest request;
+
+    @Mock
+    public LinksMapper linksMapper;
 
 }

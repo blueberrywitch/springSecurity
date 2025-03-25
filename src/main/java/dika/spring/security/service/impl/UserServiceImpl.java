@@ -4,7 +4,8 @@ import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
 import dika.spring.security.exception.UserNotFoundException;
-import mapper.UserMapper;
+import dika.spring.security.mapper.LinksMapper;
+import dika.spring.security.mapper.UserMapper;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import dika.spring.security.repository.UserRepository;
@@ -24,6 +25,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final LinksMapper linksMapper;
+
 
     @Override
     public UserResponseDto add(UserRequestDto user) {
@@ -50,7 +53,8 @@ public class UserServiceImpl implements UserService {
         updateFields(user.getUsername(), userUpdate::setUsername);
         updateFields(user.getPassword(), userUpdate::setPassword);
         LinksEntity newLink = userUpdate.getLinksEntity();
-        userUpdate.setLinksEntity(updateLinks(userMapper.fromDTO(user.getLinksEntityDTO()), newLink));
+
+        userUpdate.setLinksEntity(updateLinks(linksMapper.fromDTO(user.getLinksEntityDTO()), newLink));
         userMapper.toDTO(userRepository.save(userUpdate));
     }
 

@@ -1,9 +1,7 @@
-package mapper;
+package dika.spring.security.mapper;
 
-import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
-import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,8 +20,4 @@ public interface UserMapper {
     @Mapping(target = "role", expression = "java(dto.getRole() == null ? Collections.singletonList(Roles.USER) : dto.getRole())")
     User fromDTO(UserRequestDto dto);
 
-    @Mapping(target = "id", ignore = true)
-    LinksEntity fromDTO(LinksEntityDto linksEntity);
-
-    LinksEntityDto toDTO(LinksEntity linksEntity);
 }

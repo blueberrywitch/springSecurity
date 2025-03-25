@@ -1,6 +1,5 @@
 package dika.spring.security.mapper;
 
-import mapper.UserMapper;
 import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
@@ -8,7 +7,6 @@ import dika.spring.security.enums.Roles;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +14,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class UserMapperTest {
-
-    private final UserMapper mapper = Mappers.getMapper(UserMapper.class);
+public class UserMapperTest extends AbstractMapperTest{
 
     @Test
     public void toDTOTest() {
@@ -50,7 +46,7 @@ public class UserMapperTest {
         userResponseDto.setExternalId(externalId);
         userResponseDto.setRole(List.of(Roles.USER));
 
-        UserResponseDto result = mapper.toDTO(user);
+        UserResponseDto result = userMapper.toDTO(user);
         assertNotNull(result);
         assertEquals(userResponseDto.getPassword(), result.getPassword());
         assertEquals(userResponseDto.getRole(), result.getRole());
@@ -91,7 +87,7 @@ public class UserMapperTest {
         userResponseDto.setExternalId(externalId);
         userResponseDto.setRole(List.of(Roles.USER));
 
-        UserResponseDto result = mapper.toDTO(user);
+        UserResponseDto result = userMapper.toDTO(user);
         assertNotNull(result);
         assertEquals(userResponseDto.getPassword(), result.getPassword());
         assertEquals(userResponseDto.getRole(), result.getRole());
@@ -131,7 +127,7 @@ public class UserMapperTest {
         userRequestDto.setUsername("Anacondaz");
         userRequestDto.setRole(List.of(Roles.USER));
 
-        User result = mapper.fromDTO(userRequestDto);
+        User result = userMapper.fromDTO(userRequestDto);
         assertNotNull(result);
         assertEquals(userRequestDto.getPassword(), result.getPassword());
         assertEquals(userRequestDto.getRole(), result.getRole());
@@ -170,7 +166,7 @@ public class UserMapperTest {
         userRequestDto.setUsername("Anacondaz");
         userRequestDto.setRole(List.of(Roles.USER));
 
-        User result = mapper.fromDTO(userRequestDto);
+        User result = userMapper.fromDTO(userRequestDto);
         assertNotNull(result);
         assertEquals(userRequestDto.getPassword(), result.getPassword());
         assertEquals(userRequestDto.getRole(), result.getRole());
@@ -179,81 +175,5 @@ public class UserMapperTest {
         assertEquals(linksEntityDto.getInstRef(), result.getLinksEntity().getInstRef());
         assertEquals(linksEntityDto.getTgRef(), result.getLinksEntity().getTgRef());
         assertEquals(linksEntityDto.getVkRef(), result.getLinksEntity().getVkRef());
-    }
-
-    @Test
-    public void fromDtoLAllLinksNull() {
-        LinksEntity linksEntity = new LinksEntity();
-        linksEntity.setVkRef(null);
-        linksEntity.setInstRef(null);
-        linksEntity.setTgRef(null);
-
-        LinksEntityDto linksEntityDto = new LinksEntityDto();
-        linksEntityDto.setVkRef(null);
-        linksEntityDto.setInstRef(null);
-        linksEntityDto.setTgRef(null);
-
-        LinksEntity result = mapper.fromDTO(linksEntityDto);
-
-        assertEquals(linksEntityDto.getInstRef(), result.getInstRef());
-        assertEquals(linksEntityDto.getTgRef(), result.getTgRef());
-        assertEquals(linksEntityDto.getVkRef(), result.getVkRef());
-    }
-
-    @Test
-    public void fromDtoL() {
-        LinksEntity linksEntity = new LinksEntity();
-        linksEntity.setVkRef("qwerty");
-        linksEntity.setInstRef("qwerty");
-        linksEntity.setTgRef("qwerty");
-
-        LinksEntityDto linksEntityDto = new LinksEntityDto();
-        linksEntityDto.setVkRef("qwerty");
-        linksEntityDto.setInstRef("qwerty");
-        linksEntityDto.setTgRef("qwerty");
-
-        LinksEntity result = mapper.fromDTO(linksEntityDto);
-
-        assertEquals(linksEntityDto.getInstRef(), result.getInstRef());
-        assertEquals(linksEntityDto.getTgRef(), result.getTgRef());
-        assertEquals(linksEntityDto.getVkRef(), result.getVkRef());
-    }
-
-    @Test
-    public void toDtoL() {
-        LinksEntity linksEntity = new LinksEntity();
-        linksEntity.setVkRef("qwerty");
-        linksEntity.setInstRef("qwerty");
-        linksEntity.setTgRef("qwerty");
-
-        LinksEntityDto linksEntityDto = new LinksEntityDto();
-        linksEntityDto.setVkRef("qwerty");
-        linksEntityDto.setInstRef("qwerty");
-        linksEntityDto.setTgRef("qwerty");
-
-        LinksEntityDto result = mapper.toDTO(linksEntity);
-
-        assertEquals(linksEntityDto.getInstRef(), result.getInstRef());
-        assertEquals(linksEntityDto.getTgRef(), result.getTgRef());
-        assertEquals(linksEntityDto.getVkRef(), result.getVkRef());
-    }
-
-    @Test
-    public void toDtoLAllLinksNull() {
-        LinksEntity linksEntity = new LinksEntity();
-        linksEntity.setVkRef(null);
-        linksEntity.setInstRef(null);
-        linksEntity.setTgRef(null);
-
-        LinksEntityDto linksEntityDto = new LinksEntityDto();
-        linksEntityDto.setVkRef(null);
-        linksEntityDto.setInstRef(null);
-        linksEntityDto.setTgRef(null);
-
-        LinksEntityDto result = mapper.toDTO(linksEntity);
-
-        assertEquals(linksEntityDto.getInstRef(), result.getInstRef());
-        assertEquals(linksEntityDto.getTgRef(), result.getTgRef());
-        assertEquals(linksEntityDto.getVkRef(), result.getVkRef());
     }
 }

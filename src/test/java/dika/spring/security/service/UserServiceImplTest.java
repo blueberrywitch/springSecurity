@@ -119,7 +119,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef("newVk");
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
@@ -170,7 +170,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef(null);
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
@@ -220,7 +220,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef("newVk");
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
@@ -270,7 +270,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef("newVk");
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
@@ -320,7 +320,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef(null);
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
@@ -370,7 +370,7 @@ public class UserServiceImplTest extends Mocks {
         updatedLinks.setVkRef("newVk");
 
         when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
+        when(linksMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDTO(user)).thenReturn(dto);
 
