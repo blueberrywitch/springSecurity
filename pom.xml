@@ -116,6 +116,39 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<executions>
+					<!-- prepare-agent встраивает Java-агент Jacoco -->
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- report генерирует HTML-отчёт (фаза verify или prepare-package) -->
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Плагин maven-surefire-plugin, который запускает тесты -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<!-- Важная настройка: argLine позволяет Jacoco дописать -javaagent -->
+					<argLine>${argLine}</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
