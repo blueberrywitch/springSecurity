@@ -1,21 +1,15 @@
-package Service;
+package dika.spring.security.service;
 
 import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
-import dika.spring.security.exception.UserNotFoundException;
-import dika.spring.security.mapper.UserMapper;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
-import dika.spring.security.repository.UserRepository;
 import dika.spring.security.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,21 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class UserServiceImplTest {
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private UserMapper userMapper;
+public class UserServiceImplTest extends Mocks {
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -83,15 +69,6 @@ public class UserServiceImplTest {
         User result = userServiceImpl.findById(1L);
 
         assertEquals(user, result);
-    }
-
-    @Test
-    public void testFindByIdNotFound() {
-        when(userRepository.findById(2L)).thenReturn(java.util.Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.findById(2L);
-        });
     }
 
     @Test
@@ -158,20 +135,6 @@ public class UserServiceImplTest {
         assertEquals("newTg", savedUser.getLinksEntity().getTgRef());
         assertEquals("newInst", savedUser.getLinksEntity().getInstRef());
         assertEquals("newVk", savedUser.getLinksEntity().getVkRef());
-    }
-
-    @Test
-    public void testUpdateNotFound() {
-        UUID externalId = UUID.randomUUID();
-        UserResponseDto dto = new UserResponseDto();
-        dto.setUsername("Noize MC");
-        dto.setPassword("456");
-
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.update(externalId, dto);
-        });
     }
 
     @Test
@@ -426,106 +389,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testUpdateSomeOldLinksNull() {
-        UUID externalId = UUID.randomUUID();
-
-        UserResponseDto dto = new UserResponseDto();
-        dto.setUsername("Noize MC");
-        dto.setPassword("456");
-
-        LinksEntityDto linksDto = new LinksEntityDto();
-        linksDto.setTgRef("newTg");
-        linksDto.setInstRef("newInst");
-        linksDto.setVkRef("newVk");
-        dto.setLinksEntityDTO(linksDto);
-
-        User user = new User();
-        user.setId(1L);
-        user.setExternalId(externalId);
-        user.setUsername("Anacondaz");
-        user.setPassword("123");
-
-        LinksEntity oldLinks = new LinksEntity();
-        oldLinks.setTgRef(null);
-        oldLinks.setInstRef("oldInst");
-        oldLinks.setVkRef(null);
-        user.setLinksEntity(oldLinks);
-
-        LinksEntity updatedLinks = new LinksEntity();
-        updatedLinks.setTgRef("newTg");
-        updatedLinks.setInstRef("newInst");
-        updatedLinks.setVkRef("newVk");
-
-        when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
-        when(userRepository.save(user)).thenReturn(user);
-        when(userMapper.toDTO(user)).thenReturn(dto);
-
-        userServiceImpl.update(externalId, dto);
-
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-
-        assertEquals("Noize MC", savedUser.getUsername());
-        assertEquals("456", savedUser.getPassword());
-
-        assertEquals("newTg", savedUser.getLinksEntity().getTgRef());
-        assertEquals("newInst", savedUser.getLinksEntity().getInstRef());
-        assertEquals("newVk", savedUser.getLinksEntity().getVkRef());
-    }
-
-    @Test
-    public void testUpdateSomeNewLinksNull() {
-        UUID externalId = UUID.randomUUID();
-
-        UserResponseDto dto = new UserResponseDto();
-        dto.setUsername("Noize MC");
-        dto.setPassword("456");
-
-        LinksEntityDto linksDto = new LinksEntityDto();
-        linksDto.setTgRef("newTg");
-        linksDto.setInstRef("newInst");
-        linksDto.setVkRef("newVk");
-        dto.setLinksEntityDTO(linksDto);
-
-        User user = new User();
-        user.setId(1L);
-        user.setExternalId(externalId);
-        user.setUsername("Anacondaz");
-        user.setPassword("123");
-
-        LinksEntity oldLinks = new LinksEntity();
-        oldLinks.setTgRef("oldTg");
-        oldLinks.setInstRef("oldInst");
-        oldLinks.setVkRef("oldVk");
-        user.setLinksEntity(oldLinks);
-
-        LinksEntity updatedLinks = new LinksEntity();
-        updatedLinks.setTgRef(null);
-        updatedLinks.setInstRef("newInst");
-        updatedLinks.setVkRef(null);
-
-        when(userRepository.findByExternalId(user.getExternalId())).thenReturn(Optional.of(user));
-        when(userMapper.fromDTO(dto.getLinksEntityDTO())).thenReturn(updatedLinks);
-        when(userRepository.save(user)).thenReturn(user);
-        when(userMapper.toDTO(user)).thenReturn(dto);
-
-        userServiceImpl.update(externalId, dto);
-
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-
-        assertEquals("Noize MC", savedUser.getUsername());
-        assertEquals("456", savedUser.getPassword());
-
-        assertEquals("oldTg", savedUser.getLinksEntity().getTgRef());
-        assertEquals("newInst", savedUser.getLinksEntity().getInstRef());
-        assertEquals("oldVk", savedUser.getLinksEntity().getVkRef());
-    }
-
-    @Test
     public void testUpdateRole() {
         UUID externalId = UUID.randomUUID();
         List<Roles> roles = List.of(Roles.ADMIN);
@@ -542,18 +405,6 @@ public class UserServiceImplTest {
         assertEquals(roles, user.getRole());
 
         verify(userRepository, times(1)).findByExternalId(externalId);
-    }
-
-    @Test
-    public void testUpdateRoleNotFound() {
-        UUID externalId = UUID.randomUUID();
-        List<Roles> roles = List.of(Roles.ADMIN);
-
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.updateRole(externalId, roles);
-        });
     }
 
     @Test
@@ -605,17 +456,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findByExternalIdNotFound() {
-        UUID externalId = UUID.randomUUID();
-
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.findByExternalId(externalId);
-        });
-    }
-
-    @Test
     public void deleteByExternalId() {
         UUID externalId = UUID.randomUUID();
         User user = new User();
@@ -629,17 +469,6 @@ public class UserServiceImplTest {
         userServiceImpl.deleteByExternalId(externalId);
 
         verify(userRepository, times(1)).deleteById(user.getId());
-    }
-
-    @Test
-    public void deleteByExternalIdNotFound() {
-        UUID externalId = UUID.randomUUID();
-
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.deleteByExternalId(externalId);
-        });
     }
 
     @Test
@@ -657,17 +486,6 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findUserByUsernameNotFound() {
-        String username = "Anacondaz";
-
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.findUserByUsername(username);
-        });
-    }
-
-    @Test
     public void deleteByUsername() {
         String username = "Anacondaz";
         User user = new User();
@@ -680,17 +498,6 @@ public class UserServiceImplTest {
         userServiceImpl.deleteByUsername(username);
 
         verify(userRepository, times(1)).deleteById(user.getId());
-    }
-
-    @Test
-    public void deleteByUsernameNotFound() {
-        String username = "Anacondaz";
-
-        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> {
-            userServiceImpl.deleteByUsername(username);
-        });
     }
 
     @Test

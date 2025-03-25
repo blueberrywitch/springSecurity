@@ -1,4 +1,4 @@
-package dika.spring.security.mapper;
+package dika.spring.security;
 
 import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.dto.reqest.UserRequestDto;

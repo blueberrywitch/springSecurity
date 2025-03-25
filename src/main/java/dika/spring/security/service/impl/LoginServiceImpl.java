@@ -4,7 +4,7 @@ import dika.spring.security.dto.reqest.LoginDto;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.exception.IncorrectDataException;
 import dika.spring.security.jwt.JwtTokenProvider;
-import dika.spring.security.mapper.UserMapper;
+import dika.spring.security.UserMapper;
 import dika.spring.security.model.User;
 import dika.spring.security.service.LoginService;
 import dika.spring.security.service.UserService;

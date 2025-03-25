@@ -1,14 +1,10 @@
-package Service;
+package dika.spring.security.service;
 
 import dika.spring.security.enums.Roles;
 import dika.spring.security.model.User;
-import dika.spring.security.repository.UserRepository;
 import dika.spring.security.service.impl.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -20,11 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class CustomUserDetailsServiceTest {
-
-    @Mock
-    private UserRepository userRepository;
+public class CustomUserDetailsServiceTest extends Mocks {
 
     @InjectMocks
     private CustomUserDetailsService customUserDetailsService;
@@ -43,10 +35,10 @@ public class CustomUserDetailsServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userIdStr);
-        assertNotNull(userDetails, "UserDetails should not be null");
-        assertEquals("Anacondaz", userDetails.getUsername(), "Username should be 'Anacondaz'");
-        assertEquals("123", userDetails.getPassword(), "Password should be '123'");
-        assertEquals(1, userDetails.getAuthorities().size(), "There should be one authority");
+        assertNotNull(userDetails);
+        assertEquals("Anacondaz", userDetails.getUsername());
+        assertEquals("123", userDetails.getPassword());
+        assertEquals(1, userDetails.getAuthorities().size());
         assertEquals("USER", userDetails.getAuthorities().iterator().next().getAuthority(),
                 "Authority should be 'USER'");
     }
@@ -65,17 +57,17 @@ public class CustomUserDetailsServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userIdStr);
-        assertNotNull(userDetails, "UserDetails should not be null");
-        assertEquals("Anacondaz", userDetails.getUsername(), "Username should be 'Anacondaz'");
-        assertEquals("123", userDetails.getPassword(), "Password should be '123'");
-        assertEquals(2, userDetails.getAuthorities().size(), "There should be two authorities");
+        assertNotNull(userDetails);
+        assertEquals("Anacondaz", userDetails.getUsername());
+        assertEquals("123", userDetails.getPassword());
+        assertEquals(2, userDetails.getAuthorities().size());
 
         List<String> authorities = userDetails.getAuthorities()
                 .stream()
                 .map(a -> a.getAuthority())
                 .sorted()
                 .toList();
-        assertEquals(List.of("ADMIN", "USER"), authorities, "Authorities should contain 'ADMIN' and 'USER'");
+        assertEquals(List.of("ADMIN", "USER"), authorities);
     }
 
     @Test

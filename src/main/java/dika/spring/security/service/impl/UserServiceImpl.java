@@ -4,14 +4,13 @@ import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
 import dika.spring.security.exception.UserNotFoundException;
-import dika.spring.security.mapper.UserMapper;
+import dika.spring.security.UserMapper;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import dika.spring.security.repository.UserRepository;
 import dika.spring.security.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
