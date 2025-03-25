@@ -1,6 +1,6 @@
 package dika.spring.security.service;
 
-import dika.spring.security.UserMapper;
+import mapper.UserMapper;
 import dika.spring.security.jwt.JwtTokenProvider;
 import dika.spring.security.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

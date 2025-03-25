@@ -4,7 +4,7 @@ import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
 import dika.spring.security.exception.UserNotFoundException;
-import dika.spring.security.UserMapper;
+import mapper.UserMapper;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import dika.spring.security.repository.UserRepository;

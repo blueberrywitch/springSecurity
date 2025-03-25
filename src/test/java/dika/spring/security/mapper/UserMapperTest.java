@@ -1,6 +1,6 @@
 package dika.spring.security.mapper;
 
-import dika.spring.security.UserMapper;
+import mapper.UserMapper;
 import dika.spring.security.dto.LinksEntityDto;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
@@ -102,7 +102,7 @@ public class UserMapperTest {
         assertEquals(linksEntityDto.getTgRef(), result.getLinksEntityDTO().getTgRef());
         assertEquals(linksEntityDto.getVkRef(), result.getLinksEntityDTO().getVkRef());
     }
-    
+
     @Test
     public void fromDTOTest() {
         UUID externalId = UUID.randomUUID();
