@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @ControllerAdvice
 public class ExceptionHandler {
@@ -42,6 +43,15 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(IncorrectDataException.class)
     public ModelAndView handleIncorrectDataException(IncorrectDataException ex) {
+        ModelAndView mav = new ModelAndView("errorPage");
+        mav.setStatus(HttpStatus.BAD_REQUEST);
+        mav.addObject("errorTitle", "Неверные данные");
+        mav.addObject("errorMessage", ex.getMessage());
+        return mav;
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(TelegramApiException.class)
+    public ModelAndView handleIncorrectDataException(TelegramApiException ex) {
         ModelAndView mav = new ModelAndView("errorPage");
         mav.setStatus(HttpStatus.BAD_REQUEST);
         mav.addObject("errorTitle", "Неверные данные");

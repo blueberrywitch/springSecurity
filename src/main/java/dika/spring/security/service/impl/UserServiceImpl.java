@@ -6,6 +6,7 @@ import dika.spring.security.enums.Roles;
 import dika.spring.security.exception.UserNotFoundException;
 import dika.spring.security.mapper.LinksMapper;
 import dika.spring.security.mapper.UserMapper;
+import dika.spring.security.model.LinksDto;
 import dika.spring.security.model.LinksEntity;
 import dika.spring.security.model.User;
 import dika.spring.security.repository.UserRepository;
@@ -14,8 +15,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -26,6 +30,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final LinksMapper linksMapper;
+    private final TgPhotoServiceImpl tgPhotoService;
+    private final VkPhotoServiceImpl vkPhotoService;
 
 
     @Override
@@ -103,6 +109,25 @@ public class UserServiceImpl implements UserService {
                 (a -> a.getAuthority().equals("ADMIN"));
     }
 
+    @Override
+    public Map<User, LinksDto> getPhotos() {
+        Map<User, LinksDto> map = new HashMap<>();
+        List<User> users = userRepository.findAllWithLinksAndRoles();
+        for (User user : users) {
+            map.put(user, new LinksDto(getPhotoVK(user.getLinksEntity().getVkRef()),
+                    getPhotoTG(user.getLinksEntity().getTgRef())));
+        }
+        return map;
+    }
+
+    private String getPhotoVK(String userID) {
+        return vkPhotoService.getPhoto(userID);
+    }
+
+    private String getPhotoTG(String tg) {
+        return tgPhotoService.getPhoto(tg);
+    }
+
     private void updateFields(String newParam, Consumer<String> oldParam) {
         if (newParam != null) {
             oldParam.accept(newParam);
@@ -118,5 +143,4 @@ public class UserServiceImpl implements UserService {
         updateFields(newParam.getVkRef(), oldParam::setVkRef);
         return oldParam;
     }
-
 }

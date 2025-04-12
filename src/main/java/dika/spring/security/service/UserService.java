@@ -3,10 +3,12 @@ package dika.spring.security.service;
 import dika.spring.security.dto.reqest.UserRequestDto;
 import dika.spring.security.dto.response.UserResponseDto;
 import dika.spring.security.enums.Roles;
+import dika.spring.security.model.LinksDto;
 import dika.spring.security.model.User;
-import org.springframework.security.core.Authentication;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface UserService {
@@ -31,4 +33,6 @@ public interface UserService {
     boolean isAdmin();
 
     void deleteByUsername(String username);
+
+    Map<User, LinksDto> getPhotos();
 }

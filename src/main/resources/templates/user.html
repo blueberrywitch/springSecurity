@@ -14,6 +14,11 @@
         #notification {
             margin-bottom: 20px;
         }
+        .photo-img {
+            width: 100px;
+            height: auto;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -23,7 +28,7 @@
     <div class="mb-3">
         <div sec:authorize="!isAuthenticated()">
             <button class="btn btn-outline-primary" onclick="window.location.href='/login'">
-                Войти или зарегестрироваться
+                Войти или зарегистрироваться
             </button>
         </div>
         <div sec:authorize="isAuthenticated()">
@@ -34,39 +39,62 @@
     </div>
     <!-- Блок уведомлений -->
     <div id="notification" class="alert" style="display:none;" role="alert"></div>
-    <!-- Таблица пользователей без отображения ID -->
+    <!-- Таблица пользователей (итерация по Map) -->
     <table class="table table-bordered" id="usersTable">
         <thead>
         <tr>
+            <th>Фото</th>
             <th>Имя пользователя</th>
             <th>Ссылки</th>
             <th>Действия</th>
         </tr>
         </thead>
-        <tbody id="userTableBody">
-        <tr th:each="user : ${users}">
-            <td th:text="${user.username}"></td>
+        <tbody>
+        <tr th:each="entry : ${userPhotos}">
+            <!-- Колонка с фото: здесь можно оставить, как было, например, показываются фото из LinksDto -->
             <td>
-                <div>Telegram: <span th:text="${user.linksEntity != null ? user.linksEntity.tgRef : '-'}"></span></div>
-                <div>Instagram: <span th:text="${user.linksEntity != null ? user.linksEntity.instRef : '-'}"></span></div>
-                <div>VK: <span th:text="${user.linksEntity != null ? user.linksEntity.vkRef : '-'}"></span></div>
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <img th:if="${entry.value.vk != null and !#strings.isEmpty(entry.value.vk)}"
+                         th:src="${entry.value.vk}"
+                         alt="Фото VK"
+                         class="photo-img"/>
+                    <img th:if="${entry.value.tg != null and !#strings.isEmpty(entry.value.tg)}"
+                         th:src="${entry.value.tg}"
+                         alt="Фото Telegram"
+                         class="photo-img"/>
+                </div>
             </td>
+            <!-- Колонка с именем пользователя -->
+            <td th:text="${entry.key.username}"></td>
+            <!-- Колонка со ссылками, получаем ссылки из user.linksEntity -->
             <td>
-                <div th:if="${username != null and (username == user.username or isAdmin)}">
-                    <!-- Удаление: кнопка (используются данные для идентификации, но они не отображаются в таблице) -->
-                    <button type="button" class="btn btn-danger btn-sm"
-                            onclick="deleteUser()">
-                        Удалить
-                    </button>
-                    <!-- Кнопка редактирования: данные id и externalId передаются через data-атрибуты, но не показываются -->
+                <div>
+                    <span>VK: </span>
+                    <a th:if="${entry.key.linksEntity != null and entry.key.linksEntity.vkRef != null and !#strings.isEmpty(entry.key.linksEntity.vkRef)}"
+                       th:href="${entry.key.linksEntity.vkRef}"
+                       th:text="${entry.key.linksEntity.vkRef}"></a>
+                    <span th:if="${entry.key.linksEntity == null or entry.key.linksEntity.vkRef == null or #strings.isEmpty(entry.key.linksEntity.vkRef)}">-</span>
+                </div>
+                <div>
+                    <span>Telegram: </span>
+                    <a th:if="${entry.key.linksEntity != null and entry.key.linksEntity.tgRef != null and !#strings.isEmpty(entry.key.linksEntity.tgRef)}"
+                       th:href="${entry.key.linksEntity.tgRef}"
+                       th:text="${entry.key.linksEntity.tgRef}"></a>
+                    <span th:if="${entry.key.linksEntity == null or entry.key.linksEntity.tgRef == null or #strings.isEmpty(entry.key.linksEntity.tgRef)}">-</span>
+                </div>
+                <!-- Если в LinksEntity есть другие ссылки (например, Instagram или VK-паблик) можно добавить ещё блоки -->
+            </td>
+            <!-- Колонка с действиями -->
+            <td>
+                <div th:if="${username != null and (username == entry.key.username or isAdmin)}">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteUser()">Удалить</button>
                     <button type="button" class="btn btn-primary btn-sm edit-user-btn"
-                            th:attr="data-externalid=${user.externalId},
-                                      data-id=${user.id},
-                                      data-username=${user.username},
-                                      data-password=${user.password},
-                                      data-tgref=${user.linksEntity != null ? user.linksEntity.tgRef : ''},
-                                      data-instref=${user.linksEntity != null ? user.linksEntity.instRef : ''},
-                                      data-vkref=${user.linksEntity != null ? user.linksEntity.vkRef : ''}"
+                            th:attr="data-externalid=${entry.key.externalId},
+                                 data-id=${entry.key.id},
+                                 data-username=${entry.key.username},
+                                 data-password=${entry.key.password},
+                                 data-vkref=${entry.key.linksEntity != null ? entry.key.linksEntity.vkRef : ''},
+                                 data-tgref=${entry.key.linksEntity != null ? entry.key.linksEntity.tgRef : ''}"
                             data-toggle="modal" data-target="#editUserModal">
                         Изменить
                     </button>
@@ -74,16 +102,16 @@
             </td>
         </tr>
         </tbody>
+
+
+
     </table>
 </div>
 
 <!-- Модальное окно для редактирования пользователя -->
-<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <!-- Форма обновления пользователя.
-                 Все поля объединены в один DTO, вложенный объект для ссылок имеет префикс linksEntityDTO -->
             <form id="editUserForm" method="post">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editUserModalLabel">Редактирование пользователя</h5>
@@ -92,7 +120,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Скрытое поле для ID пользователя -->
                     <input type="hidden" name="id" id="editUserId">
                     <div class="form-group">
                         <label for="editUsername">Username</label>
@@ -104,7 +131,6 @@
                     </div>
                     <hr>
                     <h6>Ссылки</h6>
-                    <!-- Имена полей с префиксом для формирования вложенного объекта -->
                     <div class="form-group">
                         <label for="editTgRef">Telegram</label>
                         <input type="text" class="form-control" name="linksEntityDTO.tgRef" id="editTgRef">
@@ -131,14 +157,11 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-<!-- Встроенный JS-код для работы с пользователями -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Функция для отображения уведомлений
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
-            notification.className = `alert alert-${type}`;
+            notification.className = "alert alert-" + type;
             notification.textContent = message;
             notification.style.display = 'block';
             setTimeout(() => {
@@ -146,7 +169,6 @@
             }, 3000);
         }
 
-        // --- Редактирование пользователя ---
         const editButtons = document.querySelectorAll('.edit-user-btn');
         const editUserForm = document.getElementById('editUserForm');
 
@@ -163,17 +185,14 @@
                 document.getElementById('editUserId').value = id;
                 document.getElementById('editUsername').value = username;
                 document.getElementById('editPassword').value = password;
-                // Заполняем поля вложенного объекта
                 document.getElementById('editTgRef').value = tgRef;
                 document.getElementById('editInstRef').value = instRef;
                 document.getElementById('editVkRef').value = vkRef;
 
-                // Устанавливаем action формы для обновления: /user/update/{externalId}
                 editUserForm.setAttribute('action', '/user/update/' + externalId);
             });
         });
 
-        // Обработка отправки формы редактирования
         editUserForm.addEventListener('submit', function (event) {
             event.preventDefault();
             const formData = new FormData(editUserForm);
@@ -200,7 +219,6 @@
                 });
         });
 
-        // --- Удаление пользователя ---
         function deleteUser() {
             if (confirm('Вы уверены, что хотите удалить этого пользователя?')) {
                 fetch('/user/delete', { method: 'DELETE' })

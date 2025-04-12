@@ -54,6 +54,6 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER, targetClass = Roles.class)
     private List<Roles> role;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private LinksEntity linksEntity;
 }

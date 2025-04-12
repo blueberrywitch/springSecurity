@@ -11,8 +11,16 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+
+  constants:
+    botToken: "7963378331:AAG5tCRaQ04P60vkgOEwfCmHTv7VNEA3YTg"
+    botUsername: "GetPhotoBot"
+    authUserId: 506705247
+    accessToken: "vk1.a.G_ZosFrJxngmcdJCrZAXozr4zwo-2JvlBYqFY0mVabde3-TJULSPU07UWmAkooyE7vT8ZQqIOulYJPYjsQVsyz50FbGU0uoLBkYlW5jnnsFEN4SpshgWgmcnHCwrsziVxjD4lVzu3O5BknRQAXAmItogw5c3uIjYHnuFFXq2bRAssRVwK2UX6EF2wP_MPXTHv87QdjcXzJIgdkZ54ZqWSA"
+
 jwt:
   secret: MySuperPuperSecretKeyForJwtToken01234567890123456789
   expirationMs: 3600000
+
 
 
