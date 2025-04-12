@@ -1,5 +1,6 @@
 package dika.spring.security.bot;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,8 +10,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class PhotoTelegramBot extends TelegramLongPollingBot {
 
-    private final String botToken = "7963378331:AAG5tCRaQ04P60vkgOEwfCmHTv7VNEA3YTg";
-    private final String botUsername = "GetPhotoBot";
+    @Value("${spring.constants.botToken}")
+    private  String botToken;
+
+    @Value("${spring.constants.botUsername}")
+    private  String botUsername;
 
     @Override
     public void onUpdateReceived(Update update) {

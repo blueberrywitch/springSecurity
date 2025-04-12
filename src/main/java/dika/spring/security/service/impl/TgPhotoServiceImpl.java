@@ -2,6 +2,7 @@ package dika.spring.security.service.impl;
 
 import dika.spring.security.bot.PhotoTelegramBot;
 import dika.spring.security.service.PhotoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.GetUserProfilePhotos;
@@ -10,16 +11,12 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.UserProfilePhotos;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-// Здесь ты не работаешь с API телеграмма, а просто загружаешь страничку и берешь элемент img
+
+@RequiredArgsConstructor
 @Service
 public class TgPhotoServiceImpl implements PhotoService {
     private final PhotoTelegramBot telegramBot;
 
-    public TgPhotoServiceImpl(PhotoTelegramBot telegramBot) {
-        this.telegramBot = telegramBot;
-    }
-
-    // Убери throws и обрабатывай это исключение
     @Override
     public String getPhoto(String userID) {
         Long userId = Long.valueOf(userID);

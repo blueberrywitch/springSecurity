@@ -36,7 +36,7 @@ public class UserController {
 
     @PermitAll
     @GetMapping
-    public ModelAndView getUser(ModelMap model, HttpServletRequest request) throws TelegramApiException {
+    public ModelAndView getUser(ModelMap model, HttpServletRequest request){
         model.addAttribute("isAdmin", userService.isAdmin());
         model.addAttribute("username", loginService.getUsernameFromCookie(request));
         model.addAttribute("userPhotos", userService.getPhotos());

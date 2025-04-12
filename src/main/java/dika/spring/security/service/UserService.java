@@ -34,5 +34,5 @@ public interface UserService {
 
     void deleteByUsername(String username);
 
-    Map<User, LinksDto> getPhotos() throws TelegramApiException;
+    Map<User, LinksDto> getPhotos();
 }

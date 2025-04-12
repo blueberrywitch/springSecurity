@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<User, LinksDto> getPhotos() throws TelegramApiException {
+    public Map<User, LinksDto> getPhotos() {
         Map<User, LinksDto> map = new HashMap<>();
         List<User> users = userRepository.findAllWithLinksAndRoles();
         for (User user : users) {
