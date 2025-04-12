@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,10 +36,10 @@ public class UserController {
 
     @PermitAll
     @GetMapping
-    public ModelAndView getUser(ModelMap model, HttpServletRequest request) {
+    public ModelAndView getUser(ModelMap model, HttpServletRequest request) throws TelegramApiException {
         model.addAttribute("isAdmin", userService.isAdmin());
         model.addAttribute("username", loginService.getUsernameFromCookie(request));
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("userPhotos", userService.getPhotos());
         return new ModelAndView("user", model);
     }
 
@@ -58,7 +59,6 @@ public class UserController {
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
     @GetMapping("/**")
     public String errorPage() {
         return "errorPage";
